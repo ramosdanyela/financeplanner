@@ -1,5 +1,4 @@
-import { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import { useState, useContext } from "react";
 import { AuthContext } from "../../contexts/authContext";
 
 function SearchBar({
@@ -23,57 +22,60 @@ function SearchBar({
     return <p>Carregando...</p>; // Renderiza algo enquanto `loggedInUser` não está disponível
   }
 
-  const token = loggedInUser.token;
-
-  // Carregar dados das transações
-  useEffect(() => {
-    setLoading(true);
-    async function fetchData() {
-      try {
-        const response = await axios.get(
-          "http://localhost:4000/transaction/all-transactions",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setTransactions(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data", error);
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [setTransactions]);
-
   // Manipuladores de filtro
   const handleMacrotypeChange = (macrotype) => {
     setTransacMacrotype(macrotype);
+    filterTransactions(macrotype, search, category, subcategory);
   };
 
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
+    filterTransactions(transacMacrotype, event.target.value, category, subcategory);
   };
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
+    filterTransactions(transacMacrotype, search, event.target.value, subcategory);
   };
 
   const handleSubcategoryChange = (event) => {
     setSubcategory(event.target.value);
+    filterTransactions(transacMacrotype, search, category, event.target.value);
+  };
+
+  // Função de filtro principal
+  const filterTransactions = (macrotype, search, category, subcategory) => {
+    setLoading(true);
+
+    const filteredTransactions = transactions
+      .filter((transaction) =>
+        macrotype !== "all" ? transaction.transac_macrotype === macrotype : true
+      )
+      .filter((transaction) =>
+        search ? transaction.description.toLowerCase().includes(search.toLowerCase()) : true
+      )
+      .filter((transaction) =>
+        category ? transaction.category?.name === category : true
+      )
+      .filter((transaction) =>
+        subcategory ? transaction.subcategory?.name === subcategory : true
+      );
+
+    setTransactions(filteredTransactions);
+    setLoading(false);
   };
 
   // Opções únicas para category e subcategory usando new Set()
   const uniqueCategories = Array.from(
-    new Set(transactions.map((transaction) => transaction.category?.name)) // Usando ?. para evitar erro se category for undefined
+    new Set(transactions.map((transaction) => transaction.category?.name))
   )
-    .filter(Boolean) // Remove valores nulos ou undefined
+    .filter(Boolean)
     .sort();
 
   const uniqueSubcategories = Array.from(
-    new Set(transactions.map((transaction) => transaction.subcategory?.name)) // Usando ?. para evitar erro se subcategory for undefined
+    new Set(transactions.map((transaction) => transaction.subcategory?.name))
   )
-    .filter(Boolean) // Remove valores nulos ou undefined
+    .filter(Boolean)
     .sort();
 
   return (
@@ -141,7 +143,6 @@ function SearchBar({
               />
 
               {/* Filtro por categoria */}
-
               <select
                 value={category}
                 onChange={handleCategoryChange}
@@ -161,8 +162,7 @@ function SearchBar({
               <select
                 value={subcategory}
                 onChange={handleSubcategoryChange}
-                className="w-[4
-              0%] p-[10px] border-solid bg-[#FFFFFF] text-[#000000] rounded-md text-[1rem]"
+                className="w-[40%] p-[10px] border-solid bg-[#FFFFFF] text-[#000000] rounded-md text-[1rem]"
               >
                 <option key="x" value="">
                   Select Subcategory
