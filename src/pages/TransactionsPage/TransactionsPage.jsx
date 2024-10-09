@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import TransactionBox from "../../components/TransactionBox/TransactionBox";
 import DetailBox from "../../components/DetailBox/DetailBox";
 import SearchBar from "../../components/SearchBar/SearchBar";
+import MassEdit from "../../components/MassEdit/MassEdit";
 import { AuthContext } from "../../contexts/authContext";
 import { api } from "../../api/api";
 
@@ -13,6 +14,8 @@ function TransactionsPage() {
   const [category, setCategory] = useState("");
   const [subcategory, setSubcategory] = useState("");
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [massEditOpen, setMassEditOpen] = useState(false);
 
   const { loggedInUser } = useContext(AuthContext);
 
@@ -47,7 +50,9 @@ function TransactionsPage() {
         subcategory={subcategory}
         setSubcategory={setSubcategory}
         // Como `transactions` vem da API, passamos apenas para filtrar
-        transactions={transactions} 
+        transactions={transactions}
+        massEditOpen={massEditOpen}
+        setMassEditOpen={setMassEditOpen}
       />
 
       <div className="flex w-full flex-row">
@@ -58,13 +63,27 @@ function TransactionsPage() {
           subcategory={subcategory}
           transactions={transactions} // A lista original de transações da API
           setSelectedTransaction={setSelectedTransaction}
+          selectedIds={selectedIds}
+          setSelectedIds={setSelectedIds}
+          massEditOpen={massEditOpen}
         />
+
         <div className="flex w-full flex-row">
-          {selectedTransaction && (
-            <DetailBox
-              selectedTransaction={selectedTransaction}
-              setTransactions={setTransactions} // Para permitir edição na lista original
+          {massEditOpen ? (
+            <MassEdit
+              selectedIds={selectedIds}
+              setSelectedIds={setSelectedIds}
+              transactions={transactions}
+              setTransactions={setTransactions}
             />
+          ) : (
+            selectedTransaction && (
+              <DetailBox
+                key={selectedTransaction._id}
+                selectedTransaction={selectedTransaction}
+                setTransactions={setTransactions} // Para permitir edição na lista original
+              />
+            )
           )}
         </div>
       </div>

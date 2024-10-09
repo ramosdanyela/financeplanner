@@ -1,3 +1,7 @@
+import { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { AuthContext } from "../../contexts/authContext";
+
 function SearchBar({
   search,
   setSearch,
@@ -8,6 +12,8 @@ function SearchBar({
   subcategory,
   setSubcategory,
   transactions,
+  setMassEditOpen,
+  massEditOpen,
 }) {
   // Opções únicas para category e subcategory usando new Set()
   const uniqueCategories = Array.from(
@@ -21,6 +27,14 @@ function SearchBar({
   )
     .filter(Boolean) // Remove valores nulos ou undefined
     .sort();
+
+  const handleMassEditToggle = (e) => {
+    e.preventDefault();
+    console.log("Toggling Mass Edit");
+    setMassEditOpen(!massEditOpen);
+  };
+
+  console.log("MassEdit is open:", massEditOpen);
 
   return (
     <div className="flex flex-col justify-evenly items-center m-[10px] w-full bg-[#3d423c] mt-0 pt-[60px] pb-[10px] fixed">
@@ -111,6 +125,13 @@ function SearchBar({
               </option>
             ))}
           </select>
+
+          <button
+            className="bg-red-500 text-white p-[10px] rounded-md text-[1rem] hover:bg-red-600"
+            onClick={handleMassEditToggle}
+          >
+            Mass Edition
+          </button>
         </form>
       </div>
     </div>
