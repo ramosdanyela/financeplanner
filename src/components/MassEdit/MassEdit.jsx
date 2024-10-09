@@ -47,13 +47,11 @@ function MassEdit({ selectedIds, transactions, setTransactions }) {
     fetchData();
   }, []);
 
-  const handleMassEdit = async () => {
+  const handleCategoryEdit = async () => {
     try {
       // Lógica para enviar os updates em massa para o backend
       const updateData = {
-        transac_subtype: selectedSubtype,
         category: selectedCategory,
-        subcategory: selectedSubcategory,
       };
 
       await Promise.all(
@@ -76,62 +74,84 @@ function MassEdit({ selectedIds, transactions, setTransactions }) {
     }
   };
 
-  const handleCreateCategory = async () => {
+
+  const handleSubCategoryEdit = async () => {
     try {
-      if (!newCategory) return alert("Category name cannot be empty!");
+      // Lógica para enviar os updates em massa para o backend
+      const updateData = {
+       subcategory: selectedSubcategory,
+      };
 
-      const categoryExists = categories.find(
-        (category) => category.name === newCategory.toLowerCase()
+      await Promise.all(
+        selectedIds.map(async (id) => {
+          await api.put(`/transaction/edit/${id}`, updateData);
+        })
       );
-      if (categoryExists) return alert("Category already exists!");
 
-      const response = await api.post("/category/create", {
-        name: newCategory,
-      });
-      setCategories([...categories, response.data]);
-      setNewCategory("");
-      alert("Category created successfully!");
+      // Atualizar as transações no frontend
+      setTransactions((prev) =>
+        prev.map((transaction) =>
+          selectedIds.includes(transaction._id)
+            ? { ...transaction, ...updateData }
+            : transaction
+        )
+      );
+      alert("Mass edit applied successfully!");
     } catch (error) {
-      console.error("Error creating category", error);
+      console.error("Error during mass edit", error);
     }
   };
 
-  const handleCreateSubcategory = async () => {
+  const handleSubtypeEdit = async () => {
     try {
-      if (!newSubcategory) return alert("Subcategory name cannot be empty!");
+      // Lógica para enviar os updates em massa para o backend
+      const updateData = {
+        transac_subtype: selectedSubtype,
+      };
 
-      const subcategoryExists = subcategories.find(
-        (subcategory) => subcategory.name === newSubcategory.toLowerCase()
+      await Promise.all(
+        selectedIds.map(async (id) => {
+          await api.put(`/transaction/edit/${id}`, updateData);
+        })
       );
-      if (subcategoryExists) return alert("Subcategory already exists!");
 
-      const response = await api.post("/subcategory/create", {
-        name: newSubcategory,
-      });
-      setSubcategories([...subcategories, response.data]);
-      setNewSubcategory("");
-      alert("Subcategory created successfully!");
+      // Atualizar as transações no frontend
+      setTransactions((prev) =>
+        prev.map((transaction) =>
+          selectedIds.includes(transaction._id)
+            ? { ...transaction, ...updateData }
+            : transaction
+        )
+      );
+      alert("Mass edit applied successfully!");
     } catch (error) {
-      console.error("Error creating subcategory", error);
+      console.error("Error during mass edit", error);
     }
   };
+
+
+
 
   if (!loggedInUser || !loggedInUser.user || !loggedInUser.user._doc) {
     return <p>Carregando...</p>; // Renderiza algo enquanto `loggedInUser` não está disponível
   }
 
-
+  console.log(selectedSubtype);
 
   return (
     <div className="bg-white mt-[250px] p-6 rounded-lg shadow-md w-full max-w-md">
-      <h2 className="text-xl font-bold mb-4">Mass Edit</h2>
-      <p>{selectedIds.length} transactions selected</p>
+      <h2 className="text-xl text-gray-600 font-bold mb-4">Mass Edit</h2>
+      <p className="text-gray-200 bg-gray-600 mb-[20px] text-xl">
+        {selectedIds.length} transactions selected
+      </p>
 
       {/* Subtype select */}
-      <div className="flex flex-col mb-4">
-        <label className="text-gray-600 font-medium mb-1">Subtype</label>
+      <div className="flex flex-row items-center justify-between mt-[5px]">
+        <label className="text-gray-600 font-medium mb-1 mr-[5px]">
+          Subtype
+        </label>
         <select
-          className="bg-white p-2 rounded border border-gray-300"
+          className="bg-white p-2 text-gray-600 rounded border border-gray-300"
           value={selectedSubtype}
           onChange={(e) => setSelectedSubtype(e.target.value)}
         >
@@ -142,98 +162,65 @@ function MassEdit({ selectedIds, transactions, setTransactions }) {
             </option>
           ))}
         </select>
-      </div>
-
-      {/* Category select and create */}
-      <div className="flex items-center mb-4">
-        <div className="flex flex-col flex-grow">
-          <label className="text-gray-600 font-medium mb-1">Category</label>
-          <select
-            className="bg-white p-2 rounded border border-gray-300"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <option value="">Select Category</option>
-            {categories.map((category) => (
-              <option key={category._id} value={category._id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </div>
         <button
-          onClick={handleCreateCategory}
-          className="ml-4 text-blue-600 hover:text-blue-800"
-          title="Add Category"
+          onClick={handleSubtypeEdit}
+          className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
         >
-          ➕
+          Apply
         </button>
       </div>
 
-      <input
-        type="text"
-        placeholder="New category name"
-        value={newCategory}
-        onChange={(e) => setNewCategory(e.target.value)}
-        className="mb-4 bg-gray-100 p-2 rounded border border-gray-300 w-full"
-      />
-      <button
-        onClick={handleCreateCategory}
-        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 mb-4"
-      >
-        Create Category
-      </button>
+      <div className="flex flex-row items-center justify-between mt-[5px]">
+        <label className="text-gray-600 mr-[5px] font-medium mb-1">
+          Category
+        </label>
+        <select
+          className="bg-white text-gray-600 p-2 rounded border border-gray-300"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="">Select Category</option>
+          {categories.map((category) => (
+            <option key={category._id} value={category._id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={handleCategoryEdit}
+          className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+        >
+          Apply
+        </button>
+      </div>
 
       {/* Subcategory select and create */}
-      <div className="flex items-center mb-4">
-        <div className="flex flex-col flex-grow">
-          <label className="text-gray-600 font-medium mb-1">Subcategory</label>
-          <select
-            className="bg-white p-2 rounded border border-gray-300"
-            value={selectedSubcategory}
-            onChange={(e) => setSelectedSubcategory(e.target.value)}
-          >
-            <option value="">Select Subcategory</option>
-            {subcategories.map((subcategory) => (
-              <option key={subcategory._id} value={subcategory._id}>
-                {subcategory.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button
-          onClick={handleCreateSubcategory}
-          className="ml-4 text-blue-600 hover:text-blue-800"
-          title="Add Subcategory"
+      <div className="flex flex-row items-center justify-between mt-[5px]">
+        <label className="text-gray-600 mr-[5px] font-medium mb-1">
+          Subcategory
+        </label>
+        <select
+          className="bg-white text-gray-600 p-2 mr-[5px] rounded border border-gray-300"
+          value={selectedSubcategory}
+          onChange={(e) => setSelectedSubcategory(e.target.value)}
         >
-          ➕
+          <option value="">Select Subcategory</option>
+          {subcategories.map((subcategory) => (
+            <option key={subcategory._id} value={subcategory._id}>
+              {subcategory.name}
+            </option>
+          ))}
+        </select>
+
+        <button
+          onClick={handleSubCategoryEdit}
+          className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+        >
+          Apply
         </button>
       </div>
-
-      <input
-        type="text"
-        placeholder="New subcategory name"
-        value={newSubcategory}
-        onChange={(e) => setNewSubcategory(e.target.value)}
-        className="mb-4 bg-gray-100 p-2 rounded border border-gray-300 w-full"
-      />
-      <button
-        onClick={handleCreateSubcategory}
-        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
-      >
-        Create Subcategory
-      </button>
-
-      {/* Mass Edit Button */}
-      <button
-        onClick={handleMassEdit}
-        className="mt-4 bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
-      >
-        Apply Mass Edit
-      </button>
     </div>
   );
 }
-
 
 export default MassEdit;

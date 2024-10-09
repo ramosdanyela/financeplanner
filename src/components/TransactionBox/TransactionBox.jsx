@@ -26,7 +26,8 @@ function TransactionBox({
       search
         ? transaction.description.toLowerCase().includes(search.toLowerCase())
         : true
-    );
+    )
+    .sort((a, b) => b.value - a.value);
 
   const handleSelectAll = (event) => {
     if (event.target.checked) {
@@ -47,9 +48,21 @@ function TransactionBox({
     }
   };
 
+  const totalSelectedValue = selectedIds
+    .map(
+      (id) =>
+        transactions.find((transaction) => transaction._id === id)?.value || 0
+    )
+    .reduce((acc, value) => acc + value, 0);
+
   return (
     <div className="flex-auto flex-col w-[90%] text-black bg-[#FFFFFF] rounded-lg p-[20px] m-[20px] mt-[250px] shadow-lg">
-      {massEditOpen && <p> {selectedIds.length} transactions selected</p>}
+      {massEditOpen && (
+        <div className="flex flex-col ">
+          <p> {selectedIds.length} transactions selected</p>
+          <p> Selected Total Value: R$ {totalSelectedValue.toFixed(2)}</p>
+        </div>
+      )}
       {filteredTransactions.length === 0 ? (
         <p>No transactions found</p>
       ) : (

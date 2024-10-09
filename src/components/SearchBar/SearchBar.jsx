@@ -30,11 +30,9 @@ function SearchBar({
 
   const handleMassEditToggle = (e) => {
     e.preventDefault();
-    console.log("Toggling Mass Edit");
     setMassEditOpen(!massEditOpen);
   };
 
-  console.log("MassEdit is open:", massEditOpen);
 
   return (
     <div className="flex flex-col justify-evenly items-center m-[10px] w-full bg-[#3d423c] mt-0 pt-[60px] pb-[10px] fixed">

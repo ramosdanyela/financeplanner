@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import SignUpPage from "./pages/SignupPage/SignUpPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import TransactionsPage from "./pages/TransactionsPage/TransactionsPage";
+import ChartsPage from "./pages/ChartsPage/ChartsPage";
 //import ErrorPage from "./pages/ErrorPage/ErrorPage";
 
 import { AuthContextComponent } from "./contexts/authContext";
@@ -27,6 +28,10 @@ function App() {
           <Route
             path="/transactions"
             element={<ProtectedRoute element={<TransactionsPage />} />}
+          />
+           <Route
+            path="/charts"
+            element={<ProtectedRoute element={<ChartsPage />} />}
           />
           {/* <Route path="/error" element={<ErrorPage />} /> */}
         </Routes>
