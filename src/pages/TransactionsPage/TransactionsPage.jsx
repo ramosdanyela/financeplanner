@@ -1,19 +1,35 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import TransactionBox from "../../components/TransactionBox/TransactionBox";
 import DetailBox from "../../components/DetailBox/DetailBox";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { AuthContext } from "../../contexts/authContext";
+import { api } from "../../api/api";
 
 function TransactionsPage() {
   const [loading, setLoading] = useState(false); // Certifique-se de que o setLoading está definido corretamente
-  const [transactions, setTransactions] = useState([]);
-  const [search, setSearch] = useState("");
+  const [transactions, setTransactions] = useState([]); // Origem de dados
+  const [search, setSearch] = useState(""); // Filtros
   const [transacMacrotype, setTransacMacrotype] = useState("");
   const [category, setCategory] = useState("");
   const [subcategory, setSubcategory] = useState("");
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   const { loggedInUser } = useContext(AuthContext);
+
+  useEffect(() => {
+    setLoading(true);
+    async function fetchData() {
+      try {
+        const response = await api.get("/transaction/all-transactions");
+        setTransactions(response.data); // Carregar a lista de transações uma vez
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data", error);
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []); // Carregar transações apenas uma vez quando o componente é montado
 
   if (!loggedInUser || !loggedInUser.user || !loggedInUser.user._doc) {
     return <p>Carregando...</p>; // Renderiza algo enquanto `loggedInUser` não está disponível
@@ -30,33 +46,26 @@ function TransactionsPage() {
         setCategory={setCategory}
         subcategory={subcategory}
         setSubcategory={setSubcategory}
-        setTransactions={setTransactions}
-        transactions={transactions}
-        loading={loading} // Certifique-se de passar loading e setLoading como props
-        setLoading={setLoading}
+        // Como `transactions` vem da API, passamos apenas para filtrar
+        transactions={transactions} 
       />
 
-      <div className="flex w-full flex-row">
       <div className="flex w-full flex-row">
         <TransactionBox
           search={search}
           transacMacrotype={transacMacrotype}
           category={category}
           subcategory={subcategory}
-          loading={loading}
-          setLoading={setLoading}
-          transactions={transactions}
-          setTransactions={setTransactions}
-          selectedTransaction={selectedTransaction}
+          transactions={transactions} // A lista original de transações da API
           setSelectedTransaction={setSelectedTransaction}
-        /> </div>
+        />
         <div className="flex w-full flex-row">
-        {selectedTransaction && (
-          <DetailBox
-            selectedTransaction={selectedTransaction}
-            setTransactions={setTransactions}
-          />
-        )}
+          {selectedTransaction && (
+            <DetailBox
+              selectedTransaction={selectedTransaction}
+              setTransactions={setTransactions} // Para permitir edição na lista original
+            />
+          )}
         </div>
       </div>
     </div>
