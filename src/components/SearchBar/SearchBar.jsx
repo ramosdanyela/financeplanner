@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { AuthContext } from "../../contexts/authContext";
+import { AuthContext } from "../../contexts/authContext"; 
+import AddTransaction from "../AddTransaction/AddTransaction";
 
 function SearchBar({
   search,
@@ -12,9 +13,14 @@ function SearchBar({
   subcategory,
   setSubcategory,
   transactions,
-  setMassEditOpen,
+  setTransactions,
   massEditOpen,
+  setMassEditOpen,
+  createTransactionOpen,
+  setCreateTransactionOpen
 }) {
+  
+
   // Opções únicas para category e subcategory usando new Set()
   const uniqueCategories = Array.from(
     new Set(transactions.map((transaction) => transaction.category?.name))
@@ -33,9 +39,21 @@ function SearchBar({
     setMassEditOpen(!massEditOpen);
   };
 
+  const handleCreateTransactionToggle = (e) => {
+    e.preventDefault();
+    setCreateTransactionOpen(!createTransactionOpen);
+  };
+
+  {createTransactionOpen && (
+    <div className="mt-[20px] bg-gray-100 p-[20px] rounded-md w-[80%]">
+      <AddTransaction
+        setTransactions={setTransactions} // Passe a função de atualizar as transações como prop
+      />
+    </div>
+  )}
 
   return (
-    <div className="flex flex-col justify-evenly items-center m-[10px] w-full bg-[#3d423c] mt-0 pt-[60px] pb-[10px] fixed">
+    <div className="flex flex-col justify-evenly items-center m-[10px] w-full bg-[#252525] mt-0 pt-[60px] pb-[10px] fixed">
       {/* Filtro por transac_macrotype */}
       <div className="mt-[10px] text-[#FFFFFF]">
         <span className="mr-[20px] font-semibold">Filter by: </span>
@@ -129,6 +147,12 @@ function SearchBar({
             onClick={handleMassEditToggle}
           >
             Mass Edition
+          </button>
+          <button
+            className="bg-blue-500 text-white p-[10px] rounded-md text-[1rem] hover:bg-blue-600 ml-[10px]"
+            onClick={handleCreateTransactionToggle}
+          >
+            Create Transaction
           </button>
         </form>
       </div>

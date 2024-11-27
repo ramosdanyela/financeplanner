@@ -24,4 +24,4 @@ function AuthContextComponent(props) {
   );
 }
 
-export { AuthContext, AuthContextComponent };
+export { AuthContext, AuthContextComponent};

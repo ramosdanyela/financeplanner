@@ -27,7 +27,7 @@ function SignUpPage() {
       const uploadData = new FormData();
       uploadData.append("picture", img);
 
-      const response = await api.post("/upload-image", uploadData);
+      const response = await api.post("/upload-image/", uploadData);
 
       return response.data.url;
     } catch (error) {
@@ -41,7 +41,7 @@ function SignUpPage() {
     try {
       const imgURL = await handleUpload();
 
-      await api.post("/user/sign-up", { ...form, img: imgURL });
+      await api.post("/user/sign-up", { ...form, profileImage: imgURL });
       navigate("login");
     } catch (error) {
       console.log(error);
@@ -133,12 +133,23 @@ function SignUpPage() {
             />
           </div>
 
-          <button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition duration-300"> Cadastrar</button>
+          <button
+            type="submit"
+            className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition duration-300"
+          >
+            {" "}
+            Cadastrar
+          </button>
         </form>
 
-<p className="mt-4 text-center text-sm text-gray-600"> Already have an account? {"  "}
-<a href="/login" className="text-blue-500 hover:underline"> Log in </a> </p>
-
+        <p className="mt-4 text-center text-sm text-gray-600">
+          {" "}
+          Already have an account? {"  "}
+          <a href="/login" className="text-blue-500 hover:underline">
+            {" "}
+            Log in{" "}
+          </a>{" "}
+        </p>
       </div>
     </div>
   );

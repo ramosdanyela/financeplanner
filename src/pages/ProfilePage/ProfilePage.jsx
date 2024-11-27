@@ -1,32 +1,169 @@
-import { useContext } from "react";
+import { useState, useEffect } from "react";
+import { api } from "../../api/api";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../contexts/authContext";
 
-function ProfilePage() {
+function ProfilePage(setLoading) {
   const navigate = useNavigate();
+  const [profile, setProfile] = useState({});
+  const [form, setForm] = useState({
+    name: profile.name,
+    email: profile.email,
+  });
 
-  const { loggedInUser } = useContext(AuthContext);
+  const [img, setImg] = useState({ profileImage: profile.img });
 
-  if (!loggedInUser || !loggedInUser.user || !loggedInUser.user._doc) {
-    return <p>Carregando...</p>; // Renderiza algo enquanto `loggedInUser` não está disponível
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await api.get("/user/profile");
+        setProfile(response.data);
+        setForm({ name: response.data.name, email: response.data.email });
+        setImg({ profileImage: response.data.profileImage });
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  function handleChange(event) {
+    setForm({ ...form, [event.target.name]: event.target.value });
   }
 
-  const idUser = loggedInUser.user._id;
+  function handleImage(event) {
+    setImg(event.target.files[0]);
+  }
 
-  function handleLogOut() {
-    localStorage.removeItem("loggedInUser");
-    navigate("/login");
+  async function handleUpload() {
+    try {
+      const uploadData = new FormData();
+      uploadData.append("picture", img);
+
+      const response = await api.post("/upload-image/", uploadData);
+
+      return response.data.url;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    try {
+      const imgURL = await handleUpload();
+
+      await api.put("/user/editprofile", { ...form, profileImage: imgURL });
+      navigate("login");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
-    <div className="flex justify-center text-gray-600 items-center h-screen" >
-      <div className="w-80 p-6 bg-white shadow-md rounded-lg text-center">
-      <h1 className="text-2xl font-semibold mb-4">{loggedInUser.user._doc.name}</h1>
-      <p className="text-gray-600 mb-6">{loggedInUser.user._doc.email}</p>
+    <div className="mt-[100px] min-h-screen text-gray-600 flex flex-col justify-center items-center bg-gray-100">
+      <div className="bg-white shadow-md text-gray-600 rounded-lg p-8 w-96">
+        <h2 className="text-2xl font-bold text-gray-600 mb-6 text-center">
+          {" "}
+          Profile
+        </h2>
 
-      <button onClick={handleLogOut} className="px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 transition duration-200">Logout</button>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex flex-col">
+            <label htmlFor="formName" className="mb-2 text-base text-left">
+              Name
+            </label>
+            <input
+              id="formName"
+              name="name"
+              type="text"
+              value={form.name}
+              onChange={handleChange}
+              className="px-4 py-2 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Enter your name"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            {" "}
+            <label htmlFor="formImg" className="mb-2 text-base text-left">
+              {" "}
+              Your profile picture{" "}
+            </label>
+            <input id="formImg" type="file" onChange={handleImage} />
+          </div>
+
+          <div className="flex flex-col">
+            {" "}
+            <label htmlFor="formEmail" className="mb-2 text-base text-left">
+              {" "}
+              E-mail{" "}
+            </label>
+            <input
+              id="formEmail"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              className="px-4 py-2 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Enter your email"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label htmlFor="formPassword" className="mb-2 text-base text-left">
+              {" "}
+              Password:{" "}
+            </label>
+            <input
+              id="formPassword"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              className="px-4 py-2 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Enter your password"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            {" "}
+            <label
+              htmlFor="formConfirmPassword"
+              className="mb-2 text-base text-left"
+            >
+              Password Confirmation{" "}
+            </label>
+            <input
+              id="formConfirmPassword"
+              type="password"
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              className="px-4 py-2 border border-gray-300 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Confirm your password"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition duration-300"
+          >
+            {" "}
+            Cadastrar
+          </button>
+        </form>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          {" "}
+          Already have an account? {"  "}
+          <a href="/login" className="text-blue-500 hover:underline">
+            {" "}
+            Log in{" "}
+          </a>{" "}
+        </p>
       </div>
-      </div> 
+    </div>
   );
 }
 

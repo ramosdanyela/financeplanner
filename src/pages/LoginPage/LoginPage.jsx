@@ -33,7 +33,7 @@ function LoginPage() {
   }
 
   return (
-    <div className="mt-[100px] flex flex-col justify-center items-center bd-gray-100">
+    <div className="mt-[100px] flex flex-col justify-center items-center">
       <div className=" flex-grow items-center bg-white shadow-md text-gray-600 rounded-lg p-8 w-96 flex-auto flex-col">
       <h2 className="text-2xl font-bold text-gray-600 mb-6 text-center"> Login </h2>
 

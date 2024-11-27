@@ -98,7 +98,7 @@ function DetailBox({ selectedTransaction, setTransactions }) {
   };
 
   return (
-    <div className="flex w-full text-gray-800 flex-col bg-gray-100 mt-[250px] text-left  rounded-lg p-8 m-10 shadow-md w-full max-w-lg">
+    <div className="flex w-full bg-white text-gray-800 flex-col bg-gray-100 mt-[250px] text-left  rounded-lg p-8 m-10 shadow-md w-full max-w-lg">
       <h3 className="text-2xl font-bold mb-6 text-gray-800">
         Transaction Details
       </h3>
