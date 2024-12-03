@@ -1,4 +1,4 @@
-#Express Finance Planner - Frontend
+# Finance Planner - Frontend
 
 This is the frontend for the Finance Planner, a finance management application with a user-friendly interface for tracking transactions, filtering data, categorize transactions and visualizing financial insights.
 
