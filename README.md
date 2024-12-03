@@ -1,8 +1,9 @@
-# React + Vite
+#Express Finance Planner - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend for the Finance Planner, a finance management application with a user-friendly interface for tracking transactions, filtering data, categorize transactions and visualizing financial insights.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+- Authentication: Login and user-specific data display.
+- Transaction Management: Add, edit, and delete transactions.
+- Data Visualization: Interactive charts for income and expenses.
+- Responsive Design: Built with Tailwind CSS.
