@@ -39,7 +39,6 @@ function ChartsSummary({ transactions }) {
   const [filteredTransactions, setFilteredTransactions] =
     useState(transactions);
 
-
   //create state and setter for period
   //the initial value is 3 months
   const [period, setPeriod] = useState("1 year");
@@ -52,8 +51,6 @@ function ChartsSummary({ transactions }) {
 
     //declare the var filtered
     let filtered;
-
-
 
     //conditional
     if (period === "3 months") {
@@ -99,41 +96,55 @@ function ChartsSummary({ transactions }) {
     nov: 10,
     dez: 11,
   };
-  
 
   const formatDateManual = (date) => {
     const d = new Date(date);
-    const months = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+    const months = [
+      "jan",
+      "fev",
+      "mar",
+      "abr",
+      "mai",
+      "jun",
+      "jul",
+      "ago",
+      "set",
+      "out",
+      "nov",
+      "dez",
+    ];
     return `${months[d.getMonth()]}. ${d.getFullYear()}`;
   };
-  
 
   const groupByMonth = (transac_macrotype) => {
     const grouped = {};
     filteredTransactions
-      .filter((transaction) => transaction.transac_macrotype === transac_macrotype)
+      .filter(
+        (transaction) => transaction.transac_macrotype === transac_macrotype
+      )
       .forEach((transaction) => {
-        const monthYear = formatDateManual (transaction.date);
+        const monthYear = formatDateManual(transaction.date);
         grouped[monthYear] = (grouped[monthYear] || 0) + transaction.value;
       });
 
     return grouped;
   };
 
-
-
   const labels = [
     ...new Set(
       filteredTransactions.map((transaction) =>
-        formatDateManual(transaction.date))),
-  ].sort((a, b) => {const [monthA, yearA] = a.split(". ");
+        formatDateManual(transaction.date)
+      )
+    ),
+  ].sort((a, b) => {
+    const [monthA, yearA] = a.split(". ");
     const [monthB, yearB] = b.split(". ");
-  
+
     // Compare os anos primeiro
     if (yearA !== yearB) {
       return yearA - yearB;
-    };
-  
+    }
+
     // Se os anos forem iguais, compare os meses
     return monthMap[monthA] - monthMap[monthB];
   });
@@ -149,7 +160,7 @@ function ChartsSummary({ transactions }) {
     return groupedOutcome[label] || 0;
   });
 
-    const lineData = {
+  const lineData = {
     labels,
     datasets: [
       {
@@ -166,8 +177,6 @@ function ChartsSummary({ transactions }) {
       },
     ],
   };
-
-
 
   const categoryData = {
     labels: [
@@ -190,9 +199,6 @@ function ChartsSummary({ transactions }) {
         backgroundColor: "blue",
       },
     ],
-
-
-    
   };
 
   return (
