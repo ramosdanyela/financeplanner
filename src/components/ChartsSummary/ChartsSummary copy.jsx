@@ -39,10 +39,9 @@ function ChartsSummary({ transactions }) {
   const [filteredTransactions, setFilteredTransactions] =
     useState(transactions);
 
-
   //create state and setter for period
   //the initial value is 3 months
-  const [period, setPeriod] = useState("1 year");
+  const [period, setPeriod] = useState("3 months");
 
   //create function to filter period using conditional and the period setter
 
@@ -53,27 +52,25 @@ function ChartsSummary({ transactions }) {
     //declare the var filtered
     let filtered;
 
-
-
     //conditional
     if (period === "3 months") {
       //method of filtering transactions by date using new date = 1] being today and 2] being now - 3 months
       filtered = transactions.filter(
         (transaction) =>
           new Date(transaction.date) >=
-          new Date(new Date().setMonth(now.getMonth() - 3))
+          new Date(now.setMonth(now.getMonth() - 3))
       );
     } else if (period === "6 months") {
       filtered = transactions.filter(
         (transaction) =>
           new Date(transaction.date) >=
-          new Date(new Date().setMonth(now.getMonth() - 6))
+          new Date(now.setMonth(now.getMonth() - 6))
       );
     } else if (period === "1 year") {
       filtered = transactions.filter(
         (transaction) =>
           new Date(transaction.date) >=
-          new Date(new Date().setFullYear(now.getFullYear() - 1))
+          new Date(now.setFullYear(now.getFullYear() - 1))
       );
     }
     //setter for bringing all the elements of filtered to filteredtransactions
@@ -85,89 +82,51 @@ function ChartsSummary({ transactions }) {
     filterByPeriod(period);
   }, [period, transactions]);
 
-  const monthMap = {
-    jan: 0,
-    fev: 1,
-    mar: 2,
-    abr: 3,
-    mai: 4,
-    jun: 5,
-    jul: 6,
-    ago: 7,
-    set: 8,
-    out: 9,
-    nov: 10,
-    dez: 11,
-  };
-  
-
-  const formatDateManual = (date) => {
-    const d = new Date(date);
-    const months = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
-    return `${months[d.getMonth()]}. ${d.getFullYear()}`;
-  };
-  
-
-  const groupByMonth = (transac_macrotype) => {
-    const grouped = {};
-    filteredTransactions
-      .filter((transaction) => transaction.transac_macrotype === transac_macrotype)
-      .forEach((transaction) => {
-        const monthYear = formatDateManual (transaction.date);
-        grouped[monthYear] = (grouped[monthYear] || 0) + transaction.value;
-      });
-
-    return grouped;
-  };
-
-
-
-  const labels = [
-    ...new Set(
-      filteredTransactions.map((transaction) =>
-        formatDateManual(transaction.date))),
-  ].sort((a, b) => {const [monthA, yearA] = a.split(". ");
-    const [monthB, yearB] = b.split(". ");
-  
-    // Compare os anos primeiro
-    if (yearA !== yearB) {
-      return yearA - yearB;
-    };
-  
-    // Se os anos forem iguais, compare os meses
-    return monthMap[monthA] - monthMap[monthB];
-  });
-
-  // Calculate income data
-  const incomeData = labels.map((label) => {
-    const groupedIncome = groupByMonth("income");
-    return groupedIncome[label] || 0;
-  });
-  // Calculate outcome data
-  const outcomeData = labels.map((label) => {
-    const groupedOutcome = groupByMonth("outcome");
-    return groupedOutcome[label] || 0;
-  });
-
-    const lineData = {
-    labels,
+  //composing the graphs - line data:
+  const lineData = {
+    labels: [
+      ...new Set(
+        filteredTransactions.map((transaction) =>
+          new Date(transaction.date).toLocaleString("pt-BR", {
+            month: "short",
+            year: "numeric",
+          })
+        )
+      ),
+    ],
     datasets: [
       {
         label: "Income",
-        data: incomeData,
+        data: filteredTransactions
+          .filter((transaction) => transaction.type === "income")
+          .reduce((acc, curr) => {
+            const dateKey = new Date[curr.date].toLocaleString("pt-BR", {
+              month: "short",
+              year: "numeric",
+            });
+            acc[dateKey] = (acc[dateKey] || 0) + curr.value;
+            return acc;
+          }, {}),
         borderColor: "green",
         fill: false,
       },
       {
         label: "Outcome",
-        data: outcomeData,
+        data: filteredTransactions
+          .filter((transaction) => transaction.type === "income")
+          .reduce((acc, curr) => {
+            const dateKey = new Date[curr.date].toLocaleString("pt-BR", {
+              month: "short",
+              year: "numeric",
+            });
+            acc[dateKey] = (acc[dateKey] || 0) + curr.value;
+            return acc;
+          }, {}),
         borderColor: "red",
         fill: false,
       },
     ],
   };
-
-
 
   const categoryData = {
     labels: [
@@ -190,9 +149,6 @@ function ChartsSummary({ transactions }) {
         backgroundColor: "blue",
       },
     ],
-
-
-    
   };
 
   return (
@@ -203,7 +159,7 @@ function ChartsSummary({ transactions }) {
         <button onClick={() => setPeriod("1 year")}>1 year</button>
       </div>
       <div className="flex flex-row justify-between">
-        <div className="w-[50%]">
+        <div className="w-[50%] h-full">
           <Line data={lineData} />
         </div>
         <div className="w-[50%]">
