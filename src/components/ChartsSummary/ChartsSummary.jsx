@@ -177,39 +177,51 @@ function ChartsSummary({ transactions }) {
       },
     ],
   };
+  // Extrair os totais por categoria e ordenar do maior para o menor
+  const categoryDataArray = [
+    ...new Set(
+      filteredTransactions.map((transaction) => transaction.category.name)
+    ),
+  ].map((categoryName) => {
+    const total = filteredTransactions
+      .filter((transaction) => transaction.category.name === categoryName)
+      .reduce((acc, transaction) => acc + transaction.value, 0);
+    return { categoryName, total };
+  });
+
+  // Ordenar pelo total de gastos (maior para menor)
+  categoryDataArray.sort((a, b) => b.total - a.total);
+
+  // Separar rótulos e dados ordenados
+  const categoryLabels = categoryDataArray.map((item) => item.categoryName);
+  const categoryTotals = categoryDataArray.map((item) => item.total);
 
   const categoryData = {
-    labels: [
-      ...new Set(
-        filteredTransactions.map((transaction) => transaction.category)
-      ),
-    ],
+    labels: categoryLabels, // Legendas ordenadas
     datasets: [
       {
-        label: "Category Totals",
-        data: [
-          ...new Set(
-            filteredTransactions.map((transaction) => transaction.category)
-          ),
-        ].map((category) =>
-          filteredTransactions
-            .filter((transaction) => transaction.category === category)
-            .reduce((acc, transaction) => acc + transaction.value, 0)
-        ),
-        backgroundColor: "blue",
+        label: "Category Totals", // Nome do conjunto de dados
+        data: categoryTotals, // Totais ordenados
+        backgroundColor: "blue", // Cor das barras
       },
     ],
   };
 
   return (
-    <div className="flex flex-col rounded-md m-5 bg-white items-center text-gray-600">
-      <div className="flex flex-row">
-        <button onClick={() => setPeriod("3 months")}>3 months</button>
-        <button onClick={() => setPeriod("6 months")}>6 months</button>
-        <button onClick={() => setPeriod("1 year")}>1 year</button>
+    <div className="flex flex-col w-full w-wrap rounded-md m-5 bg-white items-center h-[400px] text-gray-600">
+      <div className="flex flex-row m-5">
+        <button className="m-5" onClick={() => setPeriod("3 months")}>
+          3 months{" "}
+        </button>
+        <button className="m-5" onClick={() => setPeriod("6 months")}>
+          6 months{" "}
+        </button>
+        <button className="m-5" onClick={() => setPeriod("1 year")}>
+          1 year{" "}
+        </button>
       </div>
-      <div className="flex flex-row justify-between">
-        <div className="w-[50%]">
+      <div className="flex flex-row w-full justify-between">
+        <div className="w-[50%] h-[350px]">
           <Line data={lineData} />
         </div>
         <div className="w-[50%]">
