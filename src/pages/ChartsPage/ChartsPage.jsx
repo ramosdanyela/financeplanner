@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from "react";
 import { Line } from "react-chartjs-2";
 import { AuthContext } from "../../contexts/authContext";
 import { api } from "../../api/api";
-import Chart from "chart.js/auto"; // Necessário para charts
 
 function ChartsPage() {
   const { loggedInUser } = useContext(AuthContext);
