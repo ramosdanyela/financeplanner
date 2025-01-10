@@ -57,8 +57,8 @@ function ChartsPage() {
     if (!monthlyData[month]) monthlyData[month] = { total: 0, typeTotal: 0 };
     monthlyData[month].total += transaction.value;
     if (
-      transaction[type]?.name ===
-      (type === "category" ? selectedCategory : selectedSubcategory)
+      transaction[category]?.name ===
+      (category === "category" ? selectedCategory : selectedSubcategory)
     ) {
       monthlyData[month].typeTotal += transaction.value;
     }
