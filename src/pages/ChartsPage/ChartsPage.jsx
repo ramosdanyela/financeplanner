@@ -63,11 +63,7 @@ function ChartsPage() {
     }
   });
 
-  const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
-    const [yearA, monthA] = a.split("-").map(Number);
-    const [yearB, monthB] = b.split("-").map(Number);
-    return yearA === yearB ? monthA - monthB : yearA - yearB;
-  });
+ 
   
     return {
       labels: sortedMonths,
