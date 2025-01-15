@@ -145,23 +145,9 @@ function ProfilePage(setLoading) {
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition duration-300"
-          >
-            {" "}
-            Cadastrar
-          </button>
+          
         </form>
-
-        <p className="mt-4 text-center text-sm text-gray-600">
-          {" "}
-          Already have an account? {"  "}
-          <a href="/login" className="text-blue-500 hover:underline">
-            {" "}
-            Log in{" "}
-          </a>{" "}
-        </p>
+       
       </div>
     </div>
   );
