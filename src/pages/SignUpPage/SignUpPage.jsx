@@ -49,7 +49,7 @@ function SignUpPage() {
   }
 
   return (
-    <div className="mt-[100px] min-h-screen text-gray-600 flex flex-col justify-center items-center bg-gray-100">
+    <div className="mt-[100px] min-h-screen text-gray-600 flex flex-col justify-center items-center bg-[#252525]">
       <div className="bg-white shadow-md text-gray-600 rounded-lg p-8 w-96">
         <h2 className="text-2xl font-bold text-gray-600 mb-6 text-center">
           {" "}
