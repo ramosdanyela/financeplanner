@@ -22,3 +22,17 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Backend env (não commitar segredos)
+backend/**/.env
+
+# PDF import data folders (sensitive files, large binaries)
+backend/express2/data/pdf_inbox/
+backend/express2/data/parsed_cache/
+backend/express2/data/import_queue/
+backend/express2/data/imported/
+backend/express2/data/failed/
+backend/express2/data/mongodb/
+backend/express2/data/backup_financeplanner/
+# Keep manifest files tracked
+!backend/express2/data/**/.gitkeep

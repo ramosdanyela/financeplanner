@@ -61,70 +61,86 @@ A modern, full-stack financial management application built with React and Node.
 ## 📁 Project Structure
 
 ```
-src/
-├── components/          # Reusable UI components
-│   ├── AddTransaction/  # Transaction creation form
-│   ├── ChartsSummary/   # Chart overview component
-│   ├── DetailBox/       # Transaction details modal
-│   ├── MassEdit/        # Bulk edit functionality
-│   ├── Navbar/          # Navigation component
-│   ├── ProtectedRoute/  # Route protection wrapper
-│   ├── SearchBar/       # Search functionality
-│   └── TransactionBox/  # Transaction list display
-├── pages/               # Page components
-│   ├── ChartsPage/      # Detailed charts and analytics
-│   ├── HomePage/        # Dashboard overview
-│   ├── LoginPage/       # User authentication
-│   ├── ProfilePage/     # User profile management
-│   ├── SignUpPage/      # User registration
-│   └── TransactionsPage/ # Transaction management
-├── contexts/            # React contexts
-│   └── authContext.jsx  # Authentication state management
-├── api/                 # API configuration
-│   └── api.js          # Axios setup and interceptors
-└── assets/             # Static assets
+frontend/
+├── src/
+│   ├── components/      # Reusable UI components
+│   │   ├── AddTransaction/
+│   │   ├── ChartsSummary/
+│   │   ├── DetailBox/
+│   │   ├── MassEdit/
+│   │   ├── Navbar/
+│   │   ├── ProtectedRoute/
+│   │   ├── SearchBar/
+│   │   └── TransactionBox/
+│   ├── pages/           # Page components
+│   ├── contexts/
+│   ├── api/
+│   └── assets/
+├── public/
+├── index.html
+└── package.json
+
+backend/express2/        # API Node/Express
 ```
 
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
 
-- Node.js (v16r higher)
-- npm or yarn package manager
+- **Node.js** (v18 or higher) – [nodejs.org](https://nodejs.org)
+- **MongoDB** – local or [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (recomendado)
+- npm or yarn
 
-### Getting Started
+### Monorepo: Frontend + Backend
 
-1. **Clone the repository**
+O backend oficial fica em **`backend/express2`**, o frontend em **`frontend/`**. Para rodar frontend e backend juntos e testar localmente:
+
+1. **Instalar dependências (raiz, frontend e backend):**
+
+   ```bash
+   npm install
+   cd frontend && npm install && cd ..
+   cd backend/express2 && npm install && cd ../..
+   ```
+
+2. **Configurar o backend:** copiar `backend/express2/.env.example` para `backend/express2/.env` e preencher (PORT=4000, MONGODB_URI, TOKEN_SIGN_SECRET, Cloudinary se usar upload).
+
+3. **Subir os dois:**
+   ```bash
+   npm run dev:all
+   ```
+   - Backend: http://localhost:4000
+   - Frontend: http://localhost:5173
+
+Guia completo (estrutura, env, remoto): **[docs/MONOREPO_FRONTEND_BACKEND.md](docs/MONOREPO_FRONTEND_BACKEND.md)**.
+
+### Só frontend (API em outro lugar)
+
+1. **Clone e instale:**
 
    ```bash
    git clone https://github.com/yourusername/financeplanner.git
    cd financeplanner
+   npm install
+   cd frontend && npm install && cd ..
    ```
 
-2. **Install dependencies**
+2. **(Opcional)** Crie `frontend/.env` com `VITE_API_URL=http://localhost:4000` (ou URL da sua API).
 
-   ````bash
-   npm install
-   ```3ment Configuration**
-   Create a `.env` file in the root directory:
-   ```env
-   VITE_API_URL=http://localhost:4000   ```
-
-   ````
-
-3. **Start the development server**
+3. **Inicie o dev server** (na raiz):
 
    ```bash
    npm run dev
    ```
 
-4. **Open your browser**
-   Navigate to `http://localhost:5173`
+4. Abra **http://localhost:5173**
 
 ## 📜 Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
+- `npm run dev` - Start frontend only (Vite)
+- `npm run dev:backend` - Start backend only (backend/express2)
+- `npm run dev:all` - Start backend + frontend together (local testing)
+- `npm run build` - Build frontend for production
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint
 

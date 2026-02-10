@@ -1,0 +1,226 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Backgrounds */
+  --color-bg-main: #1A1A1A;
+  --color-bg-sidebar: #212121;
+  --color-bg-card: #2C2C34;
+  --color-bg-nav-active: #3F3F4D;
+  --color-bg-nav-hover: #353540;
+
+  /* Text */
+  --color-text-primary: #E0E0E0;
+  --color-text-secondary: #A0A0A0;
+  --color-text-link: #BB86FC;
+  --color-text-income: #4CAF50;
+  --color-text-outcome: #FF5252;
+
+  /* Accents */
+  --color-accent-primary: #FF4D4D;
+  --color-accent-purple: #BB86FC;
+  --color-accent-orange: #FF9800;
+  --color-accent-amber: #E9C46A;
+  --color-accent-blue: #3498DB;
+
+  /* UI Elements */
+  --color-progress-track: #404048;
+  --color-border-subtle: #3A3A42;
+
+  /* Typography */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semi-bold: 600;
+  --font-weight-bold: 700;
+  --font-size-display: 2.25rem;
+  --font-size-balance: 1.75rem;
+  --font-size-h1: 1.25rem;
+  --font-size-h2: 1.125rem;
+  --font-size-nav: 1rem;
+  --font-size-body: 0.875rem;
+  --font-size-small: 0.75rem;
+
+  /* Spacing (8px base) */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 40px;
+
+  color-scheme: dark;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-nav-active);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Component utilities */
+@layer components {
+  /* Cards */
+  .card {
+    @apply bg-bg-card rounded-card p-xl;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply px-lg py-sm rounded-button font-medium transition-all duration-200;
+  }
+
+  .btn-primary {
+    @apply btn bg-accent-primary text-white hover:brightness-110;
+  }
+
+  .btn-secondary {
+    @apply btn bg-bg-nav-active text-text-primary hover:bg-bg-nav-hover;
+  }
+
+  .btn-link {
+    @apply text-text-link hover:underline font-medium;
+  }
+
+  /* Form inputs */
+  .input {
+    @apply bg-bg-nav-active text-text-primary px-lg py-md rounded-button border border-border-subtle
+           focus:outline-none focus:ring-2 focus:ring-accent-purple focus:border-transparent
+           placeholder:text-text-secondary;
+  }
+
+  .select {
+    @apply input appearance-none cursor-pointer;
+  }
+
+  .label {
+    @apply text-body text-text-secondary mb-sm block;
+  }
+
+  /* Navigation */
+  .nav-item {
+    @apply flex items-center gap-sm px-xl py-md text-nav text-text-secondary
+           hover:bg-bg-nav-hover hover:text-text-primary transition-colors rounded-button;
+  }
+
+  .nav-item-active {
+    @apply nav-item bg-bg-nav-active text-text-primary border-l-4 border-accent-purple;
+  }
+
+  /* Tables */
+  .table-container {
+    @apply w-full overflow-x-auto;
+  }
+
+  .table {
+    @apply w-full text-left;
+  }
+
+  .table th {
+    @apply text-body font-semibold text-text-secondary py-md px-lg border-b border-border-subtle;
+  }
+
+  .table td {
+    @apply text-body text-text-primary py-md px-lg border-b border-border-subtle;
+  }
+
+  .table tr:hover {
+    @apply bg-bg-nav-hover cursor-pointer;
+  }
+
+  /* Section headers */
+  .section-header {
+    @apply flex items-center justify-between mb-xl;
+  }
+
+  .section-title {
+    @apply text-h1 text-text-primary font-semibold;
+  }
+
+  .section-link {
+    @apply text-body text-text-link hover:underline;
+  }
+
+  /* Transaction values */
+  .value-income {
+    @apply text-text-income font-semibold;
+  }
+
+  .value-outcome {
+    @apply text-text-outcome font-semibold;
+  }
+
+  /* Progress bar */
+  .progress-track {
+    @apply h-2 w-full bg-progress-track rounded-full overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-300;
+  }
+
+  /* Badges / Tags */
+  .badge {
+    @apply inline-flex items-center px-sm py-xs text-small rounded-full;
+  }
+
+  .badge-income {
+    @apply badge bg-text-income/20 text-text-income;
+  }
+
+  .badge-outcome {
+    @apply badge bg-text-outcome/20 text-text-outcome;
+  }
+}
+
+/* Animation utilities */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
